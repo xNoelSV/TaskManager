@@ -1,0 +1,19 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:h2:mem:authdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password:
+  jpa:
+    hibernate.ddl-auto: update
+  h2.console.enabled: true
+
+jwt:
+  issuer: "auth-local"
+  # ?? Same as API Gateway
+  secret: fb72f4caee805fd3d45e807c22dc9a27e28ad605b824e7c7837a07f7961ba308
+  accessMinutes: 15

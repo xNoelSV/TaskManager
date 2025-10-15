@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            # /auth/** -> Auth-service (Without any filter)
+            - id: auth
+              uri: http://localhost:8081
+              predicates: [ Path=/auth/** ]
+              filters: [ StripPrefix=1 ]
+            # /tasks/** -> Tasks-service (Here we add a custom filter)
+            - id: tasks
+              uri: http://localhost:8082
+              predicates: [ Path=/tasks/** ]
+              filters:
+                - StripPrefix=1
+                # We add headers with a custom filter (see below)
+          globalcors:
+            cors-configurations:
+              "[/**]":
+                allowedOrigins: [ "http://localhost:3000" ]  # Local Next.js frontend
+                allowedMethods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+                allowedHeaders: [ "Authorization", "Content-Type" ]
+                allowCredentials: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # As we are using HS256 in Auth, here we validate with the SAME secret:
+          secret-key: fb72f4caee805fd3d45e807c22dc9a27e28ad605b824e7c7837a07f7961ba308
