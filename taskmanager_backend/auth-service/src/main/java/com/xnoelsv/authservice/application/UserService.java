@@ -53,19 +53,19 @@ public class UserService {
         return mapper.toTokenRes(access, expires);
     }
 
-    public MeRes me(String authz) {
-        // API Gateway won't use this endpoint, it's only for testing purposes
-        if (!authz.startsWith("Bearer ")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed Authorization header");
-        String token = authz.replace("Bearer ","").trim();
-        Claims c = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(
-                        ((String) ReflectionTestUtils.getField(jwtService, "secret")).getBytes(StandardCharsets.UTF_8)))
-                .requireIssuer(((String) ReflectionTestUtils.getField(jwtService, "issuer")))
-                .build()
-                .parseClaimsJws(token).getBody();
-
-        Long id = Long.valueOf(c.getSubject());
-        User u = users.findById(id).orElseThrow();
-        return mapper.toMeRes(u);
-    }
+//    public MeRes me(String authz) {
+//        // API Gateway won't use this endpoint, it's only for testing purposes
+//        if (!authz.startsWith("Bearer ")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed Authorization header");
+//        String token = authz.replace("Bearer ","").trim();
+//        Claims c = Jwts.parserBuilder()
+//                .setSigningKey(Keys.hmacShaKeyFor(
+//                        ((String) ReflectionTestUtils.getField(jwtService, "secret")).getBytes(StandardCharsets.UTF_8)))
+//                .requireIssuer(((String) ReflectionTestUtils.getField(jwtService, "issuer")))
+//                .build()
+//                .parseClaimsJws(token).getBody();
+//
+//        Long id = Long.valueOf(c.getSubject());
+//        User u = users.findById(id).orElseThrow();
+//        return mapper.toMeRes(u);
+//    }
 }

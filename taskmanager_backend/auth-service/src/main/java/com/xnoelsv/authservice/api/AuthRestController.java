@@ -27,9 +27,9 @@ public class AuthRestController {
         return userService.login(req);
     }
 
-    @GetMapping("/me")
-    public MeRes me(@RequestHeader("Authorization") String authz) {
-        return userService.me(authz);
-    }
+//    @GetMapping("/me")
+//    public MeRes me(@RequestHeader("Authorization") String authz) {
+//        return userService.me(authz);
+//    }
 
 }

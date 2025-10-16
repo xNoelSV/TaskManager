@@ -1,19 +1,39 @@
+#server:
+#  port: 8081
+#
+#spring:
+#  application:
+#    name: auth-service
+#  datasource:
+#    url: jdbc:h2:mem:authdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+#    username: sa
+#    password:
+#  jpa:
+#    hibernate.ddl-auto: update
+#  h2.console.enabled: true
+#
+#jwt:
+#  issuer: "auth-local"
+#  # ?? Same as API Gateway
+#  secret: fb72f4caee805fd3d45e807c22dc9a27e28ad605b824e7c7837a07f7961ba308
+#  accessMinutes: 15
+
 server:
   port: 8081
 
 spring:
-  application:
-    name: auth-service
   datasource:
-    url: jdbc:h2:mem:authdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    url: jdbc:h2:file:/data/authdb;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
+    driverClassName: org.h2.Driver
     username: sa
     password:
   jpa:
     hibernate.ddl-auto: update
-  h2.console.enabled: true
+  h2:
+    console:
+      enabled: false  # we can activate it if needed in local
 
 jwt:
-  issuer: "auth-local"
-  # ?? Same as API Gateway
-  secret: fb72f4caee805fd3d45e807c22dc9a27e28ad605b824e7c7837a07f7961ba308
-  accessMinutes: 15
+  issuer: ${JWT_ISSUER:auth-local}
+  secret: ${JWT_SECRET:dev-change-me-please-32bytes}
+  accessMinutes: ${JWT_ACCESS_MINUTES:15}

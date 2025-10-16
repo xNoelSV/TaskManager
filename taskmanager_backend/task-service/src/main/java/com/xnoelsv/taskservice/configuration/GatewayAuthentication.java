@@ -2,6 +2,9 @@ package com.xnoelsv.taskservice.configuration;
 
 import lombok.Data;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 @Data
 public class GatewayAuthentication implements Authentication {
@@ -21,4 +24,7 @@ public class GatewayAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() { return this; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() { return null; }
 }
