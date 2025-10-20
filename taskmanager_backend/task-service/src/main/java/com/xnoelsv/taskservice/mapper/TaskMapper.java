@@ -1,6 +1,7 @@
 package com.xnoelsv.taskservice.mapper;
 
 import com.xnoelsv.taskservice.application.dto.TaskDTO;
+import com.xnoelsv.taskservice.domain.EStatus;
 import com.xnoelsv.taskservice.domain.Task;
 import org.springframework.stereotype.Component;
 
@@ -18,16 +19,19 @@ public class TaskMapper {
     }
 
     public Task toEntity(TaskDTO taskDTO) {
-        return new Task(taskDTO.title(), taskDTO.description(), taskDTO.status());
+        return new Task(taskDTO.title(), taskDTO.description(), EStatus.valueOf(taskDTO.status()));
     }
 
     public TaskDTO toDTO(Task task) {
         return new TaskDTO(
                 task.getId(),
-                task.getUserId(),
                 task.getTitle(),
                 task.getDescription(),
-                mapStatus(task.getStatus().name())
+                mapStatus(task.getStatus().name()),
+                task.getCreatedById(),
+                task.getUpdatedById(),
+                task.getCreatedAt() != null ? task.getCreatedAt().toString() : null,
+                task.getUpdatedAt() != null ? task.getUpdatedAt().toString() : null
         );
     }
 

@@ -20,7 +20,7 @@ public class TaskService {
     private TaskMapper taskMapper;
 
     public List<TaskDTO> getAll() {
-        List<Task> tasks = taskRepository.findByUserId(SecurityUtils.getCurrentUserId());
+        List<Task> tasks = taskRepository.findByCreatedById(SecurityUtils.requireUserId());
         return tasks.stream()
                 .map(taskMapper::toDTO)
                 .toList();
@@ -32,20 +32,20 @@ public class TaskService {
     }
 
     public TaskDTO getById(Long id) {
-        Task t = taskRepository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())
+        Task t = taskRepository.findByIdAndCreatedById(id, SecurityUtils.requireUserId())
                 .orElseThrow(() -> new RuntimeException("Task not found"));
         return taskMapper.toDTO(t);
     }
 
     public TaskDTO update(Long id, TaskDTO patch) {
-        Task t = taskRepository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())
+        Task t = taskRepository.findByIdAndCreatedById(id, SecurityUtils.requireUserId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         taskRepository.save(t.update(patch));
         return taskMapper.toDTO(t);
     }
 
     public void delete(Long id) {
-        taskRepository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())
+        taskRepository.findByIdAndCreatedById(id, SecurityUtils.requireUserId())
                 .ifPresent(taskRepository::delete);
     }
 }

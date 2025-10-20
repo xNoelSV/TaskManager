@@ -7,36 +7,56 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId = SecurityUtils.getCurrentUser().getCredentials();
-
-    @NotBlank(message = "Title is required")
+    @NotBlank(message = "Title is mandatory")
     @Column(nullable = false)
     private String title;
 
+    @NotBlank(message = "Description is mandatory")
+    @Column(length = 4000)
     private String description;
 
-    @NotBlank(message = "Status is required")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EStatus status;
+    private EStatus status = EStatus.TODO;
 
-    public Task(String title, String description, String status) {
+    @CreatedBy
+    @Column(updatable = false)
+    private Long createdById;
+
+    @LastModifiedBy
+    private Long updatedById;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    private Instant updatedAt;
+
+    protected Task() {
+    }
+
+    public Task(String title, String description, EStatus status) {
         this.title = title;
         this.description = description;
-        if (status.isBlank()) this.status = EStatus.TODO;
-        else this.status = EStatus.valueOf(status);
+        if (status != null) this.status = status;
     }
 
     public Task update(TaskDTO patch) {
