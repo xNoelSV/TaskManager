@@ -7,6 +7,7 @@ spring:
       server:
         webflux:
           globalcors:
+            add-to-simple-url-handler-mapping: true
             cors-configurations:
               "[/**]":
                 allowedOrigins: [ "${CORS_ALLOWED_ORIGINS:http://localhost:3000}" ]
@@ -17,11 +18,9 @@ spring:
             - id: auth
               uri: http://auth:8081          # <-- docker service name
               predicates: [ Path=/auth/** ]
-              filters: [ StripPrefix=1 ]
             - id: tasks
               uri: http://tasks:8082
               predicates: [ Path=/tasks/** ]
-              filters: [ StripPrefix=1 ]
 
   security:
     oauth2:

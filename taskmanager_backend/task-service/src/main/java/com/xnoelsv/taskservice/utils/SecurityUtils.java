@@ -11,45 +11,44 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 public final class SecurityUtils {
     private SecurityUtils() {}
 
-    // Get the current authenticated user's ID as a Long, if available.
-    // Does not throw an exception.
     public static Optional<Long> getCurrentUserId() {
-        Authentication auth = getAuth();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) return Optional.empty();
 
-        // Typical case: JWT-based authentication
-        if (auth instanceof JwtAuthenticationToken token) {
-            Jwt jwt = token.getToken();
-
-            // 1) "sub" (many issuers use it as ID)
-            Long fromSub = toLong(jwt.getClaim("sub"));
-            if (fromSub != null) return Optional.of(fromSub);
-
-            // 2) other common claims in custom setups
-            Long fromUserId = toLong(jwt.getClaim("user_id"));
-            if (fromUserId != null) return Optional.of(fromUserId);
-
-            Long fromUid = toLong(jwt.getClaim("uid"));
-            if (fromUid != null) return Optional.of(fromUid);
-
-            Long fromId = toLong(jwt.getClaim("id"));
-            if (fromId != null) return Optional.of(fromId);
+        // 1) If you come with JWT (when the service validates the token directly)
+        if (auth instanceof JwtAuthenticationToken jwtAuth) {
+            Jwt jwt = jwtAuth.getToken();
+            // "subject" is the userId in your auth-service (setSubject(String.valueOf(userId)))
+            Long fromSub = toLong(jwt.getSubject());
+            // if any day you add "userId" claim
+            Long fromClaim = toLong(jwt.getClaim("userId"));
+            return Optional.ofNullable(fromClaim != null ? fromClaim : fromSub);
         }
 
-        // Fallback: tries to parse the principal name
-        Long fromName = toLong(auth.getName());
-        return Optional.ofNullable(fromName);
+        // 2) If you come from the gateway with our custom authentication
+        // (GatewayHeaderAuthFilter puts Authentication with userId in credentials)
+        Long fromCreds = toLong(auth.getCredentials());
+        if (fromCreds != null) return Optional.of(fromCreds);
+
+        // 3) Last try: check the principal if it exposes a userId field
+        Object principal = auth.getPrincipal();
+        Long fromPrincipal = toLong(principal);
+        if (fromPrincipal != null) return Optional.of(fromPrincipal);
+
+        try {
+            var f = principal.getClass().getDeclaredField("userId");
+            f.setAccessible(true);
+            Long fromField = toLong(f.get(principal));
+            if (fromField != null) return Optional.of(fromField);
+        } catch (Exception ignored) {}
+
+        return Optional.empty();
     }
 
-    // Same as above, but throws if no user is authenticated. Used in Services.
     public static Long requireUserId() {
-        return getCurrentUserId()
-                .orElseThrow(() -> new AccessDeniedException("No authenticated user"));
-    }
-
-    private static Authentication getAuth() {
-        var ctx = SecurityContextHolder.getContext();
-        return (ctx != null) ? ctx.getAuthentication() : null;
+        return getCurrentUserId().orElseThrow(
+                () -> new AccessDeniedException("User ID missing in authentication")
+        );
     }
 
     // Parse numbers/strings to Long safely. Returns null if not possible.
