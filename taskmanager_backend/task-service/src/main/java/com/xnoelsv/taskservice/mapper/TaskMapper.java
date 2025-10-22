@@ -5,6 +5,8 @@ import com.xnoelsv.taskservice.domain.EStatus;
 import com.xnoelsv.taskservice.domain.Task;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class TaskMapper {
 
@@ -19,7 +21,7 @@ public class TaskMapper {
     }
 
     public Task toEntity(TaskDTO taskDTO) {
-        return new Task(taskDTO.title(), taskDTO.description(), EStatus.valueOf(taskDTO.status()));
+        return new Task(taskDTO.title(), taskDTO.description(), taskDTO.status());
     }
 
     public TaskDTO toDTO(Task task) {

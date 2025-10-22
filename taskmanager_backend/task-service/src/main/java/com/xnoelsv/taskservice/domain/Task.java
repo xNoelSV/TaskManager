@@ -14,6 +14,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Entity
 @Data
@@ -53,10 +54,10 @@ public class Task {
     protected Task() {
     }
 
-    public Task(String title, String description, EStatus status) {
+    public Task(String title, String description, String status) {
         this.title = title;
         this.description = description;
-        if (status != null) this.status = status;
+        if (status != null) this.status = EStatus.valueOf(status);
     }
 
     public Task update(TaskDTO patch) {
