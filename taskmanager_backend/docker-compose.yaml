@@ -24,7 +24,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - JWT_SECRET=fb72f4caee805fd3d45e807c22dc9a27e28ad605b824e7c7837a07f7961ba308
       - JWT_ISSUER=auth-local
-      - JWT_ACCESS_MINUTES=15
+      - JWT_ACCESS_MINUTES=10080 # 7 days
     volumes:
       - auth_data:/data      # H2 database persistence
     # No expose the port to the host (only accessible through the internal network)

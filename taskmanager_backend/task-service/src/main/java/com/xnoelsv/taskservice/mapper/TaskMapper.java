@@ -1,11 +1,8 @@
 package com.xnoelsv.taskservice.mapper;
 
 import com.xnoelsv.taskservice.application.dto.TaskDTO;
-import com.xnoelsv.taskservice.domain.EStatus;
 import com.xnoelsv.taskservice.domain.Task;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class TaskMapper {
