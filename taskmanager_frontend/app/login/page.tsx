@@ -31,10 +31,7 @@ export default function LoginPage() {
       headers: { "Content-Type": "application/json" },
     });
     setLoading(false);
-    if (!res.ok) {
-      setErr(await res.text());
-      return;
-    }
+    if (!res.ok) return setErr(await res.text());
     router.push(next);
   }
 
@@ -48,86 +45,95 @@ export default function LoginPage() {
       headers: { "Content-Type": "application/json" },
     });
     setLoading(false);
-    if (!res.ok) {
-      setErr(await res.text());
-      return;
-    }
-    // tras registrar, enviamos a login
+    if (!res.ok) return setErr(await res.text());
     setMode("login");
     setUsernameOrEmail(email || username);
   }
 
   return (
-    <main
-      style={{
-        maxWidth: 420,
-        margin: "64px auto",
-        padding: 24,
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
-      }}
-    >
-      <h1 style={{ marginBottom: 16 }}>Auth</h1>
-      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-        <button onClick={() => setMode("login")} disabled={mode === "login"}>
-          Login
-        </button>
-        <button
-          onClick={() => setMode("register")}
-          disabled={mode === "register"}
-        >
-          Register
-        </button>
+    <main className="grid min-h-screen place-items-center p-4">
+      <div className="w-full max-w-sm rounded-2xl bg-white/95 p-6 shadow-2xl ring-1 ring-slate-200">
+        <div className="mb-6 flex rounded-xl bg-slate-100 p-1">
+          <button
+            className={`flex-1 rounded-lg px-3 py-2 text-sm font-bold text-black ${
+              mode === "login" ? "bg-white shadow" : "text-slate-400"
+            }`}
+            onClick={() => setMode("login")}
+          >
+            Log in
+          </button>
+          <button
+            className={`flex-1 rounded-lg px-3 py-2 text-sm font-bold text-black ${
+              mode === "register" ? "bg-white shadow" : "text-slate-400"
+            }`}
+            onClick={() => setMode("register")}
+          >
+            Sign in
+          </button>
+        </div>
+
+        {mode === "login" ? (
+          <form onSubmit={doLogin} className="grid gap-3">
+            <input
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              placeholder="Username or Email"
+              value={usernameOrEmail}
+              onChange={(e) => setUsernameOrEmail(e.target.value)}
+              required
+            />
+            <input
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button
+              className="mt-2 rounded-lg bg-sky-600 px-4 py-2 font-semibold text-white hover:bg-sky-700 disabled:opacity-50"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "…" : "Log in"}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={doRegister} className="grid gap-3">
+            <input
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <input
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              placeholder="Password"
+              type="password"
+              value={regPass}
+              onChange={(e) => setRegPass(e.target.value)}
+              required
+            />
+            <button
+              className="mt-2 rounded-lg bg-sky-600 px-4 py-2 font-semibold text-white hover:bg-sky-700 disabled:opacity-50"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "…" : "Create account"}
+            </button>
+          </form>
+        )}
+
+        {err && <p className="mt-3 text-sm text-red-600">{err}</p>}
       </div>
-
-      {mode === "login" ? (
-        <form onSubmit={doLogin} style={{ display: "grid", gap: 8 }}>
-          <input
-            placeholder="Username or Email"
-            value={usernameOrEmail}
-            onChange={(e) => setUsernameOrEmail(e.target.value)}
-            required
-          />
-          <input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit" disabled={loading}>
-            {loading ? "..." : "Login"}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={doRegister} style={{ display: "grid", gap: 8 }}>
-          <input
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            placeholder="Password"
-            type="password"
-            value={regPass}
-            onChange={(e) => setRegPass(e.target.value)}
-            required
-          />
-          <button type="submit" disabled={loading}>
-            {loading ? "..." : "Register"}
-          </button>
-        </form>
-      )}
-
-      {err && <p style={{ color: "crimson", marginTop: 12 }}>{err}</p>}
     </main>
   );
 }
