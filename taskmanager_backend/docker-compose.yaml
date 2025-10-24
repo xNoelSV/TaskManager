@@ -5,7 +5,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - JWT_SECRET=fb72f4caee805fd3d45e807c22dc9a27e28ad605b824e7c7837a07f7961ba308   # Same as Auth
-      - CORS_ALLOWED_ORIGINS=http://localhost:8080
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000
     ports:
       - "8080:8080"         # We expose only the API Gateway
     depends_on:
