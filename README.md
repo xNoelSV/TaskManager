@@ -221,6 +221,10 @@ This repo focuses on the architecture and local bootstrapping. There is minimal 
 - Node 18+ and PNPM/NPM/Yarn
 - Docker and Docker Compose (optional for orchestration)
 
+## Project idea
+
+I got the idea for this project from: https://roadmap.sh/projects/todo-list-api
+
 ## Author
 
 Built by **Noel Sariñena** — Full‑stack architecture with Next.js, Spring Cloud Gateway, and microservices.
