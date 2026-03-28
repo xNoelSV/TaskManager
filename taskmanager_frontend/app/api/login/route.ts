@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { LoginReq, TokenRes } from "@/lib/types";
+import { isSecureRequest } from "@/lib/auth-cookie";
 
 const BACKEND = process.env.BACKEND_URL!;
 
@@ -21,6 +22,7 @@ export async function POST(req: Request) {
   }
 
   const data = (await res.json()) as TokenRes;
+  const secure = await isSecureRequest(req);
 
   // Store token in HttpOnly cookie
   const maxAge = Math.max(1, Math.floor(data.expires_in)); // seconds
@@ -29,7 +31,7 @@ export async function POST(req: Request) {
     value: data.access_token,
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure,
     maxAge, // in seconds
     path: "/",
   });
