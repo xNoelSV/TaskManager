@@ -24,6 +24,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_H2_CONSOLE_ENABLED=true
+      - SPRING_H2_CONSOLE_WEB_ALLOW_OTHERS=true
       - JWT_SECRET=fb72f4caee805fd3d45e807c22dc9a27e28ad605b824e7c7837a07f7961ba308
       - JWT_ISSUER=auth-local
       - JWT_ACCESS_MINUTES=10080 # 7 days
@@ -43,6 +44,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_H2_CONSOLE_ENABLED=true
+      - SPRING_H2_CONSOLE_WEB_ALLOW_OTHERS=true
     ports:
       - "18082:8082"
     volumes:

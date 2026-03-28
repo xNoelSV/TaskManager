@@ -33,6 +33,8 @@ spring:
     console:
       enabled: ${SPRING_H2_CONSOLE_ENABLED:false}
       path: /h2-console
+      settings:
+        web-allow-others: ${SPRING_H2_CONSOLE_WEB_ALLOW_OTHERS:true}
 
 jwt:
   issuer: ${JWT_ISSUER:auth-local}
