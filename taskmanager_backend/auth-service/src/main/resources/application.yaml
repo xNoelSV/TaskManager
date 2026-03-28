@@ -31,7 +31,8 @@ spring:
     hibernate.ddl-auto: update
   h2:
     console:
-      enabled: false  # we can activate it if needed in local
+      enabled: ${SPRING_H2_CONSOLE_ENABLED:false}
+      path: /h2-console
 
 jwt:
   issuer: ${JWT_ISSUER:auth-local}

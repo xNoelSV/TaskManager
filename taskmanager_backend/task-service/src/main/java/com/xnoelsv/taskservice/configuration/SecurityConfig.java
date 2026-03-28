@@ -13,7 +13,11 @@ public class SecurityConfig {
     SecurityFilterChain filter(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(reg -> reg.anyRequest().authenticated())
+                .authorizeHttpRequests(reg -> reg
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .headers(h -> h.frameOptions(f -> f.disable()))
                 // We don't use resource-server here; we authenticate with a custom filter:
                 .addFilterBefore(new GatewayHeaderAuthFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();

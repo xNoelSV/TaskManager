@@ -23,12 +23,14 @@ services:
     container_name: auth
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_H2_CONSOLE_ENABLED=true
       - JWT_SECRET=fb72f4caee805fd3d45e807c22dc9a27e28ad605b824e7c7837a07f7961ba308
       - JWT_ISSUER=auth-local
       - JWT_ACCESS_MINUTES=10080 # 7 days
+    ports:
+      - "18081:8081"
     volumes:
       - auth_data:/data      # H2 database persistence
-    # No expose the port to the host (only accessible through the internal network)
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8081/actuator/health || exit 1"]
       interval: 10s
@@ -40,6 +42,9 @@ services:
     container_name: tasks
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_H2_CONSOLE_ENABLED=true
+    ports:
+      - "18082:8082"
     volumes:
       - tasks_data:/data
     healthcheck:

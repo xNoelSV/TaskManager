@@ -10,3 +10,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  h2:
+    console:
+      enabled: ${SPRING_H2_CONSOLE_ENABLED:false}
+      path: /h2-console
